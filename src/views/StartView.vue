@@ -133,7 +133,23 @@ const cardBBottom = ref(false);
 
 const cardAtTheBottom = "";
 
-const makeCardABottom = () => {
+function printBottomCard(theCard) {
+  console.log(theCard);
+}
+
+const makeCardABottom = (event) => {
+  const targetCardName = event.target.getAttribute("data-card");
+  const bottomCardEl = document.querySelector("#bottom-card");
+  const targetCard = cards.find((card) => card.name === targetCardName);
+
+  // create bottom card
+
+  bottomCardEl.insertAdjacentHTML(
+    "afterbegin",
+    `
+  <div class=${targetCard.classes}> Test card</div>  
+  `
+  );
   //Mark Card A Bottom
   cardABottom.value = true;
   cardBBottom.value = false;
@@ -148,6 +164,8 @@ const makeCardABottom = () => {
   bottomButtonA2.value = false;
   bottomButtonB1.value = true;
   bottomButtonB2.value = true;
+
+  console.log(targetCardName, targetCard, targetCard2);
 };
 
 const makeCardBBottom = () => {
@@ -476,6 +494,7 @@ const cards = [
         v-for="(card, index) in cards"
         :key="index"
         :class="card.classes"
+        :id="card.name"
         @click="
           card.name === 'Card A1' || card.name === 'Card A2'
             ? cardAselect(card.cardRef)
@@ -518,6 +537,7 @@ const cards = [
           <div v-if="bottomButtonA1">
             <button
               type="button"
+              data-card="Card A1"
               class="rounded-full bg-green-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
               @click="makeCardABottom"
             >
@@ -596,8 +616,8 @@ const cards = [
           >
             <p>Layout 1</p>
             <span>Bottom card: </span>
-            <div>
-              <svg
+            <div id="bottom-card">
+              <!-- <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 class="w-6 h-6"
@@ -608,7 +628,7 @@ const cards = [
                   d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
                   clip-rule="evenodd"
                 />
-              </svg>
+              </svg> -->
               <span>{{ layout1BottomArray }}</span>
             </div>
 
