@@ -139,17 +139,13 @@ function printBottomCard(theCard) {
 
 const makeCardABottom = (event) => {
   const targetCardName = event.target.getAttribute("data-card");
+  const targetCardID = event.target.getAttribute("data-ID");
   const bottomCardEl = document.querySelector("#bottom-card");
-  const targetCard = cards.find((card) => card.name === targetCardName);
+  const targetCardinArray = cards.find((card) => card.name === targetCardName);
+  const targetCard = document.getElementById(targetCardID);
 
   // create bottom card
 
-  bottomCardEl.insertAdjacentHTML(
-    "afterbegin",
-    `
-  <div class=${targetCard.classes}> Test card</div>  
-  `
-  );
   //Mark Card A Bottom
   cardABottom.value = true;
   cardBBottom.value = false;
@@ -165,7 +161,7 @@ const makeCardABottom = (event) => {
   bottomButtonB1.value = true;
   bottomButtonB2.value = true;
 
-  console.log(targetCardName, targetCard, targetCard2);
+  console.log(targetCardinArray, targetCard.innerHTML);
 };
 
 const makeCardBBottom = () => {
@@ -456,6 +452,7 @@ const cards = [
   {
     name: "Card A1",
     cardRef: "A1",
+    cardID: "CardA1",
     classes:
       "container w-60 bg-black p-2 rounded-lg hover:bg-zinc-700 hover:cursor-pointer",
   },
@@ -494,7 +491,7 @@ const cards = [
         v-for="(card, index) in cards"
         :key="index"
         :class="card.classes"
-        :id="card.name"
+        :id="card.cardID"
         @click="
           card.name === 'Card A1' || card.name === 'Card A2'
             ? cardAselect(card.cardRef)
@@ -538,6 +535,7 @@ const cards = [
             <button
               type="button"
               data-card="Card A1"
+              data-ID="CardA1"
               class="rounded-full bg-green-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
               @click="makeCardABottom"
             >
