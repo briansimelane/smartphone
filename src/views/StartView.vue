@@ -131,17 +131,9 @@ const bottomButtonB2 = ref(true);
 const cardABottom = ref(false);
 const cardBBottom = ref(false);
 
-const cardAtTheBottom = "";
-
-function printBottomCard(theCard) {
-  console.log(theCard);
-}
-
 const makeCardABottom = (event) => {
-  const targetCardName = event.target.getAttribute("data-card");
   const targetCardID = event.target.getAttribute("data-ID");
-  const bottomCardEl = document.querySelector("#bottom-card");
-  const targetCardinArray = cards.find((card) => card.name === targetCardName);
+
   const targetCard = document.getElementById(targetCardID);
 
   // create bottom card
@@ -161,10 +153,26 @@ const makeCardABottom = (event) => {
   bottomButtonB1.value = true;
   bottomButtonB2.value = true;
 
-  console.log(targetCardinArray, targetCard.innerHTML);
+  // reset existing bottom card
+  const existingBtmCard = document.querySelector(".bottomCard");
+  const existingTopCard = document.querySelector(".topCard");
+
+  if (existingBtmCard?.classList) {
+    existingBtmCard.classList.remove("bottomCard");
+    existingTopCard.classList.remove("topCard");
+  }
+
+  // give the top card a class of bottomCard
+  targetCard.classList.add("bottomCard");
+
+  // get  Card B and give it a class of topCard
+  document.querySelector(".cardb").classList.add("topCard");
 };
 
-const makeCardBBottom = () => {
+const makeCardBBottom = (event) => {
+  const targetCardID = event.target.getAttribute("data-ID");
+
+  const targetCard = document.getElementById(targetCardID);
   //Mark Card B Bottom
   cardABottom.value = false;
   cardBBottom.value = true;
@@ -179,6 +187,21 @@ const makeCardBBottom = () => {
   bottomButtonA2.value = true;
   bottomButtonB1.value = false;
   bottomButtonB2.value = false;
+
+  // reset existing bottom card
+  const existingBtmCard = document.querySelector(".bottomCard");
+  const existingTopCard = document.querySelector(".topCard");
+
+  if (existingBtmCard?.classList) {
+    existingBtmCard.classList.remove("bottomCard");
+    existingTopCard.classList.remove("topCard");
+  }
+
+  // give the card B card a class of bottomCard
+  targetCard.classList.add("bottomCard");
+
+  // get  Card A and give it a class of topCard
+  document.querySelector(".carda").classList.add("topCard");
 };
 
 const cardAselect = (cardAselected) => {
@@ -454,27 +477,43 @@ const cards = [
     cardRef: "A1",
     cardID: "CardA1",
     classes:
-      "container w-60 bg-black p-2 rounded-lg hover:bg-zinc-700 hover:cursor-pointer",
+      "container w-60 bg-black p-2 rounded-lg hover:bg-zinc-700 hover:cursor-pointer carda",
   },
   {
     name: "Card A2",
     cardRef: "A2",
+    cardID: "CardA2",
     classes:
-      "container w-60 bg-black p-2 rounded-lg hover:bg-zinc-700 hover:cursor-pointer",
+      "container w-60 bg-black p-2 rounded-lg hover:bg-zinc-700 hover:cursor-pointer carda",
   },
   {
     name: "Card B1",
     cardRef: "B1",
+    cardID: "CardB1",
     classes:
-      "container w-60 bg-stone-400 border border-black p-2 rounded-lg hover:bg-stone-500 hover:cursor-pointer",
+      "container w-60 bg-stone-400 border border-black p-2 rounded-lg hover:bg-stone-500 hover:cursor-pointer cardb",
   },
   {
     name: "Card B2",
     cardRef: "B2",
+    cardID: "CardB2",
     classes:
-      "container w-60 bg-stone-400 border border-black p-2 rounded-lg hover:bg-stone-500 hover:cursor-pointer",
+      "container w-60 bg-stone-400 border border-black p-2 rounded-lg hover:bg-stone-500 hover:cursor-pointer cardb",
   },
 ];
+
+function insertBottomHTML() {
+  const bottomCard = document.querySelector(".bottomCard");
+
+  // Set the HTML content you want to insert
+  return `${bottomCard.outerHTML}`;
+}
+function insertTopHTML() {
+  const topCard = document.querySelector(".topCard");
+
+  // Set the HTML content you want to insert
+  return `${topCard.outerHTML}`;
+}
 </script>
 
 <template>
@@ -554,6 +593,8 @@ const cards = [
           <div v-if="bottomButtonA2">
             <button
               type="button"
+              data-card="Card A2"
+              data-ID="CardA2"
               class="rounded-full bg-green-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
               @click="makeCardABottom"
             >
@@ -572,6 +613,8 @@ const cards = [
           <div v-if="bottomButtonB1">
             <button
               type="button"
+              data-card="Card B1"
+              data-ID="CardB1"
               class="rounded-full bg-green-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
               @click="makeCardBBottom"
             >
@@ -590,6 +633,8 @@ const cards = [
           <div v-if="bottomButtonB2">
             <button
               type="button"
+              data-card="Card B2"
+              data-ID="CardB2"
               class="rounded-full bg-green-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
               @click="makeCardBBottom"
             >
@@ -627,12 +672,15 @@ const cards = [
                   clip-rule="evenodd"
                 />
               </svg> -->
+
+              <div v-html="insertBottomHTML()"></div>
+
               <span>{{ layout1BottomArray }}</span>
             </div>
 
             <span class="ml-2">Top card: </span>
-            <div>
-              <svg
+            <div id="top-card">
+              <!-- <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 class="w-6 h-6"
@@ -643,7 +691,9 @@ const cards = [
                   d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
                   clip-rule="evenodd"
                 />
-              </svg>
+              </svg> -->
+
+              <div v-html="insertTopHTML()"></div>
             </div>
           </div>
 
